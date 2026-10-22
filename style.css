@@ -27,3 +27,4 @@ ul{padding-left:22px}
 footer{border-top:1px solid var(--line);padding:24px 0;color:var(--muted);font-size:14px;text-align:center}
 footer a{color:var(--muted)}
 @media (max-width:520px){h1{font-size:32px}nav a{margin:0 14px 0 0}}
+@media (min-width:700px){.magician{width:320px}}
