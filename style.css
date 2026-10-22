@@ -13,6 +13,7 @@ nav a{color:var(--muted);text-decoration:none;margin-left:18px;font-size:15px}
 nav a:hover,nav a.on{color:var(--gold)}
 main{padding:48px 0 64px}
 .hero{text-align:center;padding:24px 0 8px}
+.magician{display:block;margin:0 auto 18px;width:220px;max-width:60vw;height:auto;aspect-ratio:5/8;border-radius:16px;border:3px solid var(--gold);box-shadow:0 0 0 1px var(--gold2),0 0 40px rgba(245,197,66,.35),0 12px 30px rgba(0,0,0,.5)}
 .sigil{font-size:54px;color:var(--gold);text-shadow:0 0 24px rgba(245,197,66,.5)}
 h1{font-family:Georgia,"Times New Roman",serif;font-size:42px;line-height:1.15;margin:10px 0 12px}
 h2{font-family:Georgia,"Times New Roman",serif;color:var(--gold);font-size:24px;margin:36px 0 8px}
