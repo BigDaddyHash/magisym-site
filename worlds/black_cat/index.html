@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1, user-scalable=no">
+  <meta name="theme-color" content="#120a2e">
+  <title>Black Cat · The Queen's Garden · MagiSym</title>
+  <style>
+    :root { --purple:#120a2e; --gold:#f5c542; --cream:#fff5d9; }
+    * { box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+    html,body { height:100%; width:100%; margin:0; overflow:hidden; background:#120a2e; font-family:Georgia,"Times New Roman",serif; color:var(--cream); touch-action:none; }
+    #world { display:block; width:100vw; height:100dvh; touch-action:none; outline:none; }
+    #shell { position:fixed; inset:0; pointer-events:none; overflow:hidden; }
+    .top { position:absolute; top:0; left:0; right:0; padding:calc(13px + env(safe-area-inset-top)) calc(16px + env(safe-area-inset-right)) 0 calc(16px + env(safe-area-inset-left)); display:flex; align-items:start; justify-content:space-between; gap:12px; }
+    .title-panel { text-shadow:0 2px 12px #000b; }
+    .eyebrow {font-family:Arial,sans-serif;letter-spacing:0.25em;text-transform:uppercase;font-size:9px;color:#ffda7a; font-weight:700; }
+    h1 { margin:5px 0 4px; font-size:clamp(20px,5.3vw,29px); line-height:1.05; font-weight:500; }
+    .subtitle { font-family:Arial,sans-serif; font-size:10px; letter-spacing:0.09em; color:#f9eecbc9; }
+    button { font:inherit; cursor:pointer; border:0; touch-action:manipulation; }
+    #exit { pointer-events:auto; height:41px; width:41px; flex:0 0 auto; font:25px/1 Arial; border:1px solid #efd38a65; border-radius:50%; background:#120a2e9e; color:var(--cream); backdrop-filter:blur(8px); }
+    #bottom { pointer-events:none; position:absolute; bottom:calc(18px + env(safe-area-inset-bottom)); left:calc(19px + env(safe-area-inset-left)); right:calc(19px + env(safe-area-inset-right)); display:flex; align-items:end; justify-content:space-between; gap:14px; }
+    #joystick { pointer-events:auto; width:100px; height:100px; border:1px solid #fff8d45a; border-radius:50%; background:radial-gradient(circle,#21174461,#0c0b1d6b); display:grid; place-items:center; box-shadow:0 0 0 7px #100b2344; position:relative; user-select:none; }
+    #stick { position:absolute; width:44px; height:44px; border-radius:50%; background:radial-gradient(circle at 32% 26%,#ffe3a8c0,#e4a847aa 65%,#7d5f2bb3); border:1px solid #fff2c7a4; box-shadow:0 2px 12px #0005; transform:translate(0px,0px); }
+    #jlabel { position:absolute; top:-23px; font:9px Arial; letter-spacing:.16em; color:#fff9d3dd; }
+    #interact { pointer-events:auto; min-height:52px; padding:12px 17px; border:1px solid #ffe79bba; color:#271727; background:linear-gradient(130deg,#fff2b6,#f5c542); border-radius:30px; box-shadow:0 4px 24px #e9ad4455; font:700 12px Arial,sans-serif; letter-spacing:.02em; max-width:54vw; transition:opacity .2s; }
+    #interact[hidden] { display:none; }
+    #hint { position:absolute; bottom:calc(133px + env(safe-area-inset-bottom)); left:50%; transform:translateX(-50%); white-space:normal; text-align:center; font:11px/1.45 Arial,sans-serif; border:1px solid #f5c54255; background:#120a2e99; padding:9px 14px; border-radius:25px; width:max-content; max-width:78vw; opacity:.95; }
+    #toast { position:absolute; top:calc(130px + env(safe-area-inset-top)); left:50%; transform:translate(-50%,-10px); color:#fff5dd; padding:12px 18px; border:1px solid #edc37188; background:#160d32ee; font:13px/1.45 Georgia; text-align:center; border-radius:14px; max-width:80vw; opacity:0; transition:opacity .2s,transform .2s; }
+    #toast.show {opacity:1;transform:translate(-50%,0)}
+    #intro { position:fixed; inset:0; display:flex; justify-content:center; align-items:center; background:linear-gradient(180deg,#100a27b3,#120a2ef0); padding:25px; text-align:center; pointer-events:auto; }
+    #intro.hidden { display:none; }
+    .intro-inner { max-width:340px; padding:26px 22px; background:#120a2edb; border:1px solid #e9c77788; box-shadow:0 16px 70px #0009; border-radius:20px; backdrop-filter:blur(12px); }
+    .intro-mark {color:var(--gold);font-size:34px;line-height:1; margin-bottom:13px;}
+    #intro h2 { font-size:33px; font-weight:400; margin:0 0 9px; }
+    #intro p { font-size:15px; line-height:1.48; color:#f5ebdddc; margin:0 0 20px; }
+    #enter { display:inline-block; padding:13px 30px; border-radius:25px; background:#f5c542; color:#271736; font:700 13px Arial; }
+    .legend { font:11px/1.45 Arial; margin-top:16px; color:#e9d9b4c0; }
+    #portrait {position:absolute;inset:0;background:#080714c9;display:grid;place-items:center;padding:22px;pointer-events:auto;}
+    #portrait[hidden] {display:none;}
+    .lore {width:min(340px,88vw);background:#120a2ef2;border:1px solid #e5c17488;border-radius:16px;padding:13px 13px 18px;box-shadow:0 17px 60px #000b;text-align:center;}
+    .lore img {display:block;width:100%;max-height:45dvh;object-fit:contain;object-position:center;border-radius:7px;}
+    .lore h3 {font:23px/1.1 Georgia;margin:13px 0 7px;color:#fff3d4;}
+    .lore p {font:12px/1.5 Arial;margin:0 4px 14px;color:#e6dccef0;}
+    #closePortrait {background:#f5c542;color:#21132b;padding:10px 20px;border-radius:22px;font:bold 12px Arial;}
+    @media (min-width:800px) { #joystick {width:115px;height:115px;} #hint{bottom:155px;} }
+    @media (prefers-reduced-motion:reduce) { * {animation:none!important;transition:none!important;} }
+  </style>
+</head>
+<body>
+<canvas id="world" tabindex="0" aria-label="Interactive painted garden. Move left or right to explore."></canvas>
+<div id="shell">
+  <div class="top"><div class="title-panel"><div class="eyebrow">MagiSym · Familiar Realms</div><h1>The Queen's Garden</h1><div class="subtitle">BLACK CAT · THE SUNLIT GROVE</div></div><button id="exit" aria-label="Exit world">×</button></div>
+  <div id="toast" role="status" aria-live="polite"></div>
+  <div id="hint">Move to explore · Tap your cat to pet</div>
+  <div id="bottom"><div id="joystick" role="group" aria-label="Movement joystick"><span id="jlabel">MOVE</span><div id="stick"></div></div><button id="interact" hidden>Interact ✦</button></div>
+  <div id="portrait" hidden role="dialog" aria-label="Queen of Wands painting"><div class="lore"><img src="./assets/queen_of_wands.webp" alt="Adam's Queen of Wands tarot illustration with a black cat at her feet"><h3>The Queen's Companion</h3><p>The black cat's first home was beside the Queen of Wands. A familiar remembers the artist's world.</p><button id="closePortrait">Return to the Garden</button></div></div>
+</div>
+<div id="intro" role="dialog" aria-modal="true"><div class="intro-inner"><div class="intro-mark">✦</div><div class="eyebrow">A Familiar Sanctuary</div><h2>The Queen's Garden</h2><p>A little black cat waits among the golden leaves. Wander the grove, follow its curiosity, and see what the garden remembers.</p><button id="enter">Enter the Garden</button><div class="legend">Touch joystick to walk · Drag to look · Tap glowing objects to interact</div></div></div>
+<script>
+'use strict';
+// Black Cat pilot: dependency-free 2.5D Canvas renderer. No runtime network requests.
+// See README for the intentionally small React Native WebView bridge.
+(() => {
+  const el = id => document.getElementById(id);
+  const canvas=el('world'), ctx=canvas.getContext('2d',{alpha:false,desynchronized:true});
+  const intro=el('intro'),hint=el('hint'),interactButton=el('interact'),joystick=el('joystick'),stick=el('stick');
+  const assets={}; let w=400,h=760,dpr=1,last=0,elapsed=0,active=false,initSeen=false;
+  const reducedMotion=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const WORLD=2450;
+  const state={x:1080,cam:1080,look:0,velocity:0,joy:0,target:null,drag:null,playerName:'Explorer',familiarId:'black_cat',theme:'dark',petCount:0,events:new Set(),near:null};
+  const sites=[
+    {x:480,name:'Whispering Stone',event:'found_glimmer',emoji:'✧',words:'The stone holds the last light of summer.'},
+    {x:1635,name:'The Golden Shrine',event:'found_secret',emoji:'✦',words:'A hidden symbol blooms beneath the leaves.'},
+    {x:2240,name:'Moonwell',event:'visited_moonwell',emoji:'☾',words:'In the water, the stars seem close enough to touch.'}
+  ];
+  const flowers=Array.from({length:165},(_,i)=>({x:(i*239.14+71)%WORLD,off:(Math.sin(i*73.1)+1)/2,s:0.6+(i%5)/8,p:i%3}));
+  const motes=Array.from({length:45},(_,i)=>({x:(i*141.3+99)%WORLD,y:0.1+((i*71)%110)/180,s:1+(i%3)*0.55,o:i*1.45}));
+  const clamp=(n,a,b)=>Math.max(a,Math.min(b,n));
+  function post(payload){try{window.ReactNativeWebView?.postMessage(JSON.stringify(payload));}catch(e){}}
+  function notify(s){const e=el('toast');e.textContent=s;e.classList.add('show');clearTimeout(notify.timer);notify.timer=setTimeout(()=>e.classList.remove('show'),2600);}
+  function onMessage(ev){let msg=ev?.data;try{if(typeof msg==='string')msg=JSON.parse(msg);}catch(e){return;}if(!msg||msg.type!=='init')return;if(msg.familiarId && msg.familiarId!=='black_cat'){notify('This pilot realm is designed for the black cat.');return;}initSeen=true;state.playerName=String(msg.playerName||'Explorer').slice(0,60);state.theme=msg.theme==='light'?'light':'dark';state.familiarId='black_cat';}
+  // RN iOS WebView uses window, some Android versions use document. Browser works without init.
+  window.addEventListener('message',onMessage);document.addEventListener('message',onMessage);
+  function image(name,src){return new Promise(resolve=>{const im=new Image();im.onload=()=>{assets[name]=im;resolve(true)};im.onerror=()=>resolve(false);im.src=src;});}
+  function resize(){const box=canvas.getBoundingClientRect();w=box.width;h=box.height;dpr=Math.min(devicePixelRatio||1,1.75);canvas.width=Math.round(w*dpr);canvas.height=Math.round(h*dpr);ctx.setTransform(dpr,0,0,dpr,0,0);}
+  window.addEventListener('resize',resize);window.addEventListener('orientationchange',resize);
+  const ground=()=>h*.79;
+  // Horizontal screen coordinate from world; geometry is a gentle 2.5D side-scroller.
+  const sx=x=>(x-state.cam)*Math.min(1.18,w/355)+w*.50;
+  function drawBackground(){
+    const img=assets.bg;
+    if(img){
+      // A layered panorama from Adam's original tarot imagery, moving more slowly than foreground.
+      const sc=h/img.height*1.10, iw=img.width*sc;
+      const shift=(-state.cam*.13+state.look*.09)%iw;
+      for(let xx=shift-iw;xx<w+iw;xx+=iw){ctx.drawImage(img,xx,-h*.075,iw,h*1.1);}
+    } else {ctx.fillStyle='#356b73';ctx.fillRect(0,0,w,h);}
+    let sky=ctx.createLinearGradient(0,0,0,h);sky.addColorStop(0,'#0d274350');sky.addColorStop(.44,'#be884e00');sky.addColorStop(.9,'#120a2e8f');ctx.fillStyle=sky;ctx.fillRect(0,0,w,h);
+    // A golden atmospheric shaft near the grove entrance.
+    const x=sx(970)-140;
+    let g=ctx.createRadialGradient(x,h*.28,5,x,h*.28,h*.62);
+    g.addColorStop(0,'#f7c7632e');g.addColorStop(1,'#f7c76300');ctx.fillStyle=g;ctx.fillRect(0,0,w,h);
+  }
+  function drawGround(){
+    const y=ground();let g=ctx.createLinearGradient(0,y-65,0,h);g.addColorStop(0,'#182b2088');g.addColorStop(.15,'#21301fdd');g.addColorStop(1,'#0b120e');ctx.fillStyle=g;ctx.fillRect(0,y-65,w,h-y+65);
+    // Speckled painterly highlights create a walkable path.
+    for(let i=0;i<115;i++){
+      const wx=(i*97.7+35)%WORLD,x=sx(wx),py=y+34+((i*133)%117)/117*(h-y-25);
+      if(x< -20||x>w+20)continue;
+      const radius=(i%7+2)*.8;
+      ctx.fillStyle=i%5===0?'#efcb7562':i%3===0?'#41634380':'#98794238';
+      ctx.beginPath();ctx.ellipse(x,py,radius*1.9,radius*.42,(i%3-1)*.2,0,Math.PI*2);ctx.fill();
+    }
+    ctx.fillStyle='#d7b76925';ctx.beginPath();ctx.ellipse(w*.5,y+30,w*.39,22,0,0,Math.PI*2);ctx.fill();
+  }
+  function foliage(wx,scale,flip,opacity){
+    const x=sx(wx);const img=assets.foliage;if(!img||x< -300||x>w+300)return;
+    ctx.save();ctx.globalAlpha=opacity;ctx.translate(x,ground()+36);ctx.scale((flip?-1:1)*scale,scale);ctx.drawImage(img,-img.width*.48,-img.height*.81);ctx.restore();
+  }
+  function drawFlowers(){for(const f of flowers){let x=sx(f.x);if(x<-20||x>w+20)continue;const y=ground()+23+f.off*(h-ground()-45);const r=2.1*f.s;ctx.strokeStyle='#a7ac6749';ctx.lineWidth=1.1;ctx.beginPath();ctx.moveTo(x,y+5);ctx.lineTo(x,y-8);ctx.stroke();ctx.fillStyle=['#f3d389','#dbb9bd','#e4b666'][f.p];for(let a=0;a<5;a++){const t=a*6.28/5;ctx.beginPath();ctx.ellipse(x+Math.cos(t)*r,y-8+Math.sin(t)*r,r*.67,r*.48,t,0,6.28);ctx.fill();}ctx.fillStyle='#ffdd69';ctx.fillRect(x-.85,y-8-.85,1.7,1.7);}}
+  function drawSite(s){let x=sx(s.x),y=ground()-22;if(x< -170||x>w+170)return;const sway=reducedMotion?0:Math.sin(elapsed*1.3+s.x)*3;
+    ctx.save();ctx.translate(x,y+sway);
+    let g=ctx.createRadialGradient(0,-35,3,0,-35,80);g.addColorStop(0,'#f5c5427d');g.addColorStop(1,'#f5c54200');ctx.fillStyle=g;ctx.fillRect(-82,-130,164,180);
+    ctx.fillStyle='#1e2630';ctx.beginPath();ctx.moveTo(-36,14);ctx.lineTo(-24,-18);ctx.lineTo(-14,-24);ctx.lineTo(-13,-66);ctx.lineTo(15,-66);ctx.lineTo(17,-20);ctx.lineTo(31,-13);ctx.lineTo(38,14);ctx.closePath();ctx.fill();
+    ctx.strokeStyle='#bea46c';ctx.lineWidth=2;ctx.strokeRect(-12,-62,24,38);ctx.fillStyle='#f7d77a';ctx.font='26px Georgia';ctx.textAlign='center';ctx.fillText(s.emoji,0,-34);
+    ctx.fillStyle='#ccb071';ctx.beginPath();ctx.ellipse(0,10,47,10,0,0,6.28);ctx.fill();
+    ctx.restore();
+  }
+  function drawCat(){
+    const x=sx(state.x),y=ground()-16; if(x<-100||x>w+100)return;
+    const speed=Math.abs(state.velocity),bob=reducedMotion?0:Math.sin(elapsed*(speed>20?11:2.1))*Math.min(4.5,1.5+speed*.009),direction=state.velocity<-4?-1:1;
+    ctx.save();ctx.translate(x,y+bob);ctx.scale(direction,1);
+    ctx.fillStyle='#04090bc0';ctx.beginPath();ctx.ellipse(0,12,43,11,0,0,6.28);ctx.fill();
+    ctx.strokeStyle='#111218';ctx.lineWidth=13;ctx.lineCap='round';ctx.beginPath();ctx.moveTo(-28,-38);ctx.bezierCurveTo(-67,-63,-54,-91,-34,-86);ctx.stroke();
+    ctx.strokeStyle='#2a2930';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(-28,-38);ctx.bezierCurveTo(-67,-63,-54,-91,-34,-86);ctx.stroke();
+    let body=ctx.createLinearGradient(-40,-80,38,0);body.addColorStop(0,'#242632');body.addColorStop(.5,'#080b12');body.addColorStop(1,'#15151d');ctx.fillStyle=body;
+    ctx.beginPath();ctx.ellipse(-2,-38,37,42,-.12,0,6.28);ctx.fill();
+    // Four legs kept anatomically separate, rather than merging into the body.
+    for(const lx of [-24,-11,16,29]){ctx.fillStyle=lx<0?'#10131b':'#161820';ctx.beginPath();ctx.roundRect(lx-6,-14,11,29,5);ctx.fill();}
+    ctx.fillStyle='#10111a';ctx.beginPath();ctx.arc(16,-80,31,0,6.28);ctx.fill();
+    for(const ears of [[-10,-108,-2,-132,7,-111],[20,-109,33,-130,41,-99]]){ctx.beginPath();ctx.moveTo(...ears.slice(0,2));ctx.lineTo(...ears.slice(2,4));ctx.lineTo(...ears.slice(4,6));ctx.closePath();ctx.fill();}
+    ctx.fillStyle='#35303b';ctx.beginPath();ctx.moveTo(29,-119);ctx.lineTo(32,-125);ctx.lineTo(36,-110);ctx.fill();
+    for(let i=0;i<2;i++){const ex=i?30:8;ctx.fillStyle='#f3d97c';ctx.beginPath();ctx.ellipse(ex,-83,5.1,6.2,0,0,6.28);ctx.fill();ctx.fillStyle='#060709';ctx.beginPath();ctx.ellipse(ex,-83,1.5,5.5,0,0,6.28);ctx.fill();}
+    ctx.fillStyle='#bd858a';ctx.beginPath();ctx.moveTo(17,-70);ctx.lineTo(24,-70);ctx.lineTo(21,-67);ctx.fill();
+    ctx.strokeStyle='#bfb4a280';ctx.lineWidth=.75;for(const side of [-1,1])for(let i=0;i<3;i++){ctx.beginPath();ctx.moveTo(21,-69+i*2);ctx.lineTo(21+side*39,-73+i*6);ctx.stroke();}
+    ctx.restore();
+    if(!reducedMotion && speed<10){ctx.save();ctx.globalAlpha=.10+.04*Math.sin(elapsed*2);ctx.fillStyle='#f5c542';ctx.beginPath();ctx.arc(x+22,y-83,30,0,6.28);ctx.fill();ctx.restore();}
+  }
+  function drawMotes(dt){for(let p of motes){let x=sx(p.x);if(x<-10||x>w+10)continue;const y=h*(p.y+.12)+(!reducedMotion?Math.sin(elapsed*.75+p.o)*8:0);const a=.18+.26*(.5+.5*Math.sin(elapsed*1.4+p.o));ctx.fillStyle=`rgba(255,219,127,${a.toFixed(3)})`;ctx.beginPath();ctx.arc(x,y,p.s,0,6.28);ctx.fill();}}
+  function draw(){ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,w,h);drawBackground();
+    // Distant leaf silhouettes drift less than objects on the walkable plane.
+    for(let i=0;i<6;i++){const x=((i*425-state.cam*.20)%2100+2100)%2100-330;if(x>w+220)continue;ctx.fillStyle='#0d241a57';ctx.beginPath();ctx.ellipse(x,ground()-85,110+i%3*20,110,0,0,6.28);ctx.fill();}
+    foliage(0,1.1,false,.53);foliage(600,.7,true,.64);foliage(1330,.8,false,.56);foliage(1990,.95,true,.57);
+    drawGround();for(const site of sites)drawSite(site);drawFlowers();drawCat();
+    foliage(290,.46,true,.49);foliage(920,.58,false,.51);foliage(1770,.52,true,.46);foliage(2440,.62,false,.54);
+    drawMotes();
+    const dark=ctx.createRadialGradient(w*.48,h*.45,h*.07,w*.48,h*.45,h*.83);dark.addColorStop(0,'#120a2e00');dark.addColorStop(1,'#100c2799');ctx.fillStyle=dark;ctx.fillRect(0,0,w,h);
+  }
+  function update(dt){const move=state.joy|| (state.target!==null?Math.sign(state.target-state.x):0);state.velocity=move*195;if(state.target!==null && Math.abs(state.target-state.x)<6){state.target=null;state.velocity=0;}
+    state.x=clamp(state.x+state.velocity*dt,70,WORLD-50);
+    state.cam+=(clamp(state.x+state.look,200,WORLD-200)-state.cam)*Math.min(1,dt*4.1);
+    state.near=sites.find(s=>Math.abs(s.x-state.x)<110)||null;
+    interactButton.hidden=!state.near; if(state.near)interactButton.textContent=`Explore ${state.near.name} ✦`;
+  }
+  function frame(t){let dt=Math.min(.04,(t-last)/1000||.016);last=t;if(active){elapsed+=reducedMotion?dt*.15:dt;update(dt);}draw();requestAnimationFrame(frame);}
+  function performSite(site){if(!site)return;if(Math.abs(site.x-state.x)>125){state.target=site.x;notify(`Walk toward ${site.name} to investigate.`);return;}
+    notify(site.words);
+    if(site.event==='found_secret'){el('portrait').hidden=false;state.joy=0;state.target=null;}
+    if(!state.events.has(site.event)){state.events.add(site.event);post({type:'event',name:site.event});}
+  }
+  function pet(){state.petCount++;notify(state.petCount%3===0?'The black cat purrs, and a little golden light dances.':'The black cat leans into your hand. ♡');post({type:'event',name:'pet_familiar'});}
+  function exit(){post({type:'exit'});if(!window.ReactNativeWebView)notify('Exit received. Close this browser tab to leave the realm.');}
+  el('closePortrait').addEventListener('click',()=>{el('portrait').hidden=true;});
+  el('exit').addEventListener('click',exit);el('enter').addEventListener('click',()=>{intro.classList.add('hidden');active=true;hint.textContent='Walk with the joystick · Tap the cat to pet';canvas.focus();});
+  interactButton.addEventListener('click',()=>performSite(state.near));
+  function setJoy(ev){const b=joystick.getBoundingClientRect();let dx=(ev.clientX-(b.left+b.width/2))/(b.width*.33);state.joy=clamp(dx,-1,1);stick.style.transform=`translate(${clamp(dx,-1,1)*25}px,0px)`;state.target=null;}
+  joystick.addEventListener('pointerdown',ev=>{ev.preventDefault();joystick.setPointerCapture(ev.pointerId);setJoy(ev)});
+  joystick.addEventListener('pointermove',ev=>{if(joystick.hasPointerCapture(ev.pointerId))setJoy(ev)});
+  const stopJoy=()=>{state.joy=0;stick.style.transform='translate(0px,0px)'};
+  joystick.addEventListener('pointerup',stopJoy);joystick.addEventListener('pointercancel',stopJoy);joystick.addEventListener('lostpointercapture',stopJoy);
+  canvas.addEventListener('pointerdown',ev=>{if(!active)return;canvas.setPointerCapture(ev.pointerId);state.drag={id:ev.pointerId,x:ev.clientX,start:ev.clientX,y:ev.clientY,look:state.look};});
+  canvas.addEventListener('pointermove',ev=>{const s=state.drag;if(!s||s.id!==ev.pointerId)return;if(Math.abs(ev.clientX-s.start)>12){state.look=clamp(s.look+(s.start-ev.clientX)*.75,-w*.7,w*.7);}});
+  canvas.addEventListener('pointerup',ev=>{const s=state.drag;if(!s||s.id!==ev.pointerId)return;state.drag=null;
+    if(Math.abs(ev.clientX-s.start)>12)return;
+    const px=ev.clientX,py=ev.clientY,cat=sx(state.x);
+    if(Math.abs(px-cat)<55 && py>ground()-150 && py<ground()+45){pet();return;}
+    const obj=sites.find(o=>Math.abs(px-sx(o.x))<52 && py>ground()-135&&py<ground()+25);
+    if(obj){performSite(obj);return;}
+    state.target=clamp(state.cam+(px-w*.5)/Math.min(1.18,w/355),60,WORLD-60);
+  });
+  window.addEventListener('keydown',ev=>{if(!active)return;if(['ArrowLeft','ArrowRight','a','d','A','D'].includes(ev.key)){ev.preventDefault();state.target=null;state.joy=ev.key==='ArrowLeft'||ev.key.toLowerCase()==='a'?-1:1;}if(ev.key==='Escape')exit();if(ev.key===' '){ev.preventDefault();if(state.near)performSite(state.near);else pet();}});
+  window.addEventListener('keyup',ev=>{if(['ArrowLeft','ArrowRight','a','d','A','D'].includes(ev.key))state.joy=0;});
+  document.addEventListener('visibilitychange',()=>{last=performance.now();});
+  Promise.all([image('bg','./assets/grove_backdrop.webp'),image('foliage','./assets/foliage.webp')]).then(()=>{resize();requestAnimationFrame(frame);post({type:'ready'});});
+})();
+</script>
+</body></html>
