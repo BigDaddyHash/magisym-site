@@ -7,5 +7,4 @@ window.FIREBASE_CONFIG = {
   storageBucket: "comet-miner.firebasestorage.app",
   messagingSenderId: "1005396381903",
   appId: "1:1005396381903:web:167cf3f182c39e02afe7ba"
-};// Paste the firebaseConfig from the Firebase console here (it is safe to be public).
-window.FIREBASE_CONFIG = null;
+};
