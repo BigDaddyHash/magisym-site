@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Get Intuition Games</title>
+<meta name="description" content="Intuition Games: find the gold card. Free on iPhone and Android.">
+<meta property="og:title" content="Intuition Games"><meta property="og:description" content="Find the gold card. Free on iPhone and Android.">
+<meta property="og:image" content="https://magisym.com/get/icon.png">
+<script>
+  // Sends each phone straight to its store; computers (and anything else) see both buttons below.
+  var IOS = 'https://apps.apple.com/app/id6830859418';
+  var ANDROID = 'https://play.google.com/store/apps/details?id=com.magisym.intuitiongames';
+  var ua = navigator.userAgent || '';
+  var isIOS = /iPhone|iPad|iPod/i.test(ua) || (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1);
+  if (isIOS) location.replace(IOS);
+  else if (/Android/i.test(ua)) location.replace(ANDROID);
+</script>
+<style>
+  body { margin:0; min-height:100vh; display:flex; align-items:center; justify-content:center; text-align:center;
+    background:linear-gradient(180deg,#120a2e,#2a1259 55%,#120a2e); color:#fff; font-family:-apple-system,Segoe UI,Roboto,sans-serif; }
+  .box { padding:32px 24px; max-width:420px; }
+  img { width:120px; height:120px; border-radius:26px; box-shadow:0 0 40px rgba(245,197,66,.45); }
+  h1 { color:#f5c542; font-size:32px; margin:20px 0 4px; }
+  p { color:#c4b5fd; margin:0 0 28px; letter-spacing:1px; }
+  a.btn { display:block; margin:12px 0; padding:15px; border-radius:14px; font-weight:800; font-size:18px; text-decoration:none; }
+  .ios { background:#f5c542; color:#120a2e; }
+  .android { background:transparent; color:#f5c542; border:2px solid #f5c542; }
+  small { display:block; margin-top:24px; color:#8b7fc4; }
+  small a { color:#c4b5fd; }
+</style></head>
+<body><div class="box">
+  <img src="icon.png" alt="Intuition Games icon">
+  <h1>Intuition Games</h1>
+  <p>Trust what you feel</p>
+  <a class="btn ios" href="https://apps.apple.com/app/id6830859418">Download on the App Store</a>
+  <a class="btn android" href="https://play.google.com/store/apps/details?id=com.magisym.intuitiongames">Get it on Google Play</a>
+  <small>Free to download · by <a href="https://magisym.com">Magisym Software</a></small>
+</div></body></html>
